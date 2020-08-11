@@ -2,6 +2,8 @@ const axios = require('axios').default;
 const config = require('../common/config')
 var qs = require('qs');
 
+const dumbCache = new Map();
+
 const myClient = axios.create({
     baseURL: config.get('datamuse.address'),
     paramsSerializer: params => qs.stringify(params, {arrayFormat: 'repeat'})
@@ -15,6 +17,14 @@ const USED_TO_DESCRIBE_KEY = "rel_jjb";
 const TRIGGERED_BY_KEY = "rel_trg";
 
 async function getWords(constraints = {limit: 100}) {
+
+    const cacheKey = JSON.stringify(constraints);
+    if (dumbCache.has(cacheKey)) {
+        const result = dumbCache.get(cacheKey);
+        console.log("Cache hit for: " + cacheKey + "\nGot back: " + JSON.stringify(result));
+        return result;
+    }
+
     const {
         relatedTo = [], 
         soundsLike = [], 
@@ -37,7 +47,9 @@ async function getWords(constraints = {limit: 100}) {
         }
       });
 
-      console.log("Made call for: " + JSON.stringify(constraints) + "\nGot back: " + JSON.stringify(result.data));
+      console.log("Made call for: " + cacheKey + "\nGot back: " + JSON.stringify(result.data));
+
+      dumbCache.set(cacheKey, result.data);
 
       return result.data || [];
 }

@@ -13,20 +13,20 @@ async function getVocalTrackResource(req){
     const topicString = req.query["topic"];
     const experiementalResult = await lyricService.getLyricsForTopic({
         topic: topicString,
-        lyricCount: 3
+        lyricCount: 10
     })
 
     debugger;
-    const words = await Promise.all(experiementalResult.map(async (wordString) => {
+    const words = (await Promise.all(experiementalResult.map(async (wordString) => {
         try {
-            const sound = await googleClient.getWord(wordString);
-            return {sound, wordString};
+            const {audioContent, word} = await googleClient.getWord(wordString);
+            return [{sound: audioContent, word}];
         } catch (e) {
+            console.log("Discarding " + wordString + " as Google was unable to convert it to speech.");
             console.log(e);
-            throw e;
+            return [];
         }
-        
-    }));
+    }))).flat();
 
     return {
         statusCode: 200,
