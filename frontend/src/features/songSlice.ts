@@ -4,9 +4,9 @@ import config from '../config';
 
 const apiGatewayUrl = config.apiGateway.URL;
 
-interface WordResult {
-  wordString: string;
-  sound: any;
+export interface WordResult {
+  word: string;
+  sound: string;
 }
 
 interface SongState {
@@ -67,16 +67,31 @@ const { receiveSong, selectTopic } = songSlice.actions;
 // code can then be executed and other actions can be dispatched
 export const fetchSong = (topic: string): AppThunk => dispatch => {
   dispatch(selectTopic(topic))
-  setTimeout(() => {
-    console.log(apiGatewayUrl);
-    dispatch(receiveSong({topic, words: []}));
-  }, 1000);
+
+  let queryParams = new URLSearchParams();
+  queryParams.append("topic", topic);
+  
+  fetch(`${apiGatewayUrl}/vocalTrack?${queryParams.toString()}`)
+        .then(response => {
+            return response.json();
+        })
+        .then(json => {          
+          dispatch(receiveSong({
+            topic: json.topic, 
+            words: json.words
+          }));
+        });
 };
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectWords = (state: RootState) => state.song.words;
+export const selectWords = (state: RootState) => state.song.words?.map(({word, sound})=> {
+  return {
+    word, 
+    sound: Uint8Array.from(atob(sound), c => c.charCodeAt(0)).buffer
+  }
+});
 export const selectSongStage = (state: RootState) => state.song.songStage;
 
 export default songSlice.reducer;

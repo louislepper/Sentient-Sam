@@ -3,11 +3,6 @@ import React from 'react';
 import './App.css';
 import { SongContainer } from './features/SongContainer';
 
-function onClickHandler() {
-  alert("hi");
-}
-
-
 function App() {
   return (
     <div className="App">

@@ -1,35 +1,49 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { SongInit } from './SongInit';
-import { SongStateEnum, selectSongStage } from './songSlice';
+import { SongStateEnum, selectSongStage, selectWords } from './songSlice';
 import { PlayingSong } from './PlayingSong';
+import 'loaders.css/loaders.css';
+import Loader from 'react-loaders'
+
+function invalidState() {
+  return (
+    <div className='col'>
+      <h1>Invalid State</h1>
+    </div>
+  )
+}
 
 export function SongContainer() {
-  debugger;
   const stage = useSelector(selectSongStage);
+  const words = useSelector(selectWords);
 
-  // @ts-ignore
   switch(stage) {
     case SongStateEnum.SELECTION:
       return (
         <div className='col'>
-          
           <SongInit/>
         </div>
       );
-    break;
     case SongStateEnum.PLAYING:
+        if (words == null) {
+          return invalidState();
+        }
+
       return (
         <div className='col'>
-          <PlayingSong/>
+          <PlayingSong words={words}/>
         </div>
       )
-    break;
+    case SongStateEnum.LOADING:
+      return (
+        <div> 
+                {/*
+                  // @ts-ignore */}
+                <Loader active={true} color="black" type="line-scale-party"/>
+        </div>
+      )
     default:
-      return (
-        <div className='col'>
-          <h1>Invalid State</h1>
-        </div>
-      )
+      return invalidState();
   }
 }

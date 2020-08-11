@@ -26,6 +26,14 @@
   color: rgb(112, 76, 182);
 }
 
+
+.loader-hidden {
+  display: none;
+}
+.loader-active {
+  display: block;
+} 
+
 @keyframes App-logo-float {
   0% {
     transform: translateY(0);

@@ -12,18 +12,24 @@ import {
 
 export function SongInit() {
 
+  const [topic, setTopic] = useState("");
+
   const dispatch = useDispatch();
 
   function onClickHandler() {
-      dispatch(fetchSong('shirt'));
-    }
+      dispatch(fetchSong(topic));
+  }
+
+  function handleTopicInput(e: React.ChangeEvent<HTMLInputElement>) {
+    setTopic(e.target.value);
+  }
 
   return (
     <div className="col init">
             <form>
               <label>
                 Sing me a song about:
-                <input type="text"/>
+                <input type="text" onChange={ handleTopicInput }/>
               </label>
               <div>
                 <AwesomeButton type="primary" onPress={onClickHandler}>Sing for me</AwesomeButton>
