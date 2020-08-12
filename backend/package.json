@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" PORT=3001 node ./bin/www",
-    "debug": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" PORT=3001 node --inspect-brk ./bin/www",
+    "start": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" node ./bin/www",
+    "debug": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" node --inspect-brk ./bin/www",
     "test": "jest"
   },
   "dependencies": {
