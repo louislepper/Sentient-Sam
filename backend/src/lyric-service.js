@@ -34,6 +34,27 @@ const criteriaPriorityList = [
     ["perfectRhymesWith"],
     ["triggeredBy"],
 ];
+
+function createRequestsWithCriteria(topic) {
+    return criteriaPriorityList.flatMap((criteria) => {
+        const onTopicDirectly = () => dataMuseClient.getWords(
+            {...arrayToObject(
+                    criteria, 
+                    topic
+                ), limit: 5 }
+            );
+
+        const onSanitisedTopic = () => dataMuseClient.getWords(
+            {...arrayToObject(
+                    criteria, 
+                    simplifyTopic(topic)
+                ), limit: 5 }
+            );;
+
+        return [onTopicDirectly, onSanitisedTopic];
+    });
+}
+
 const arrayToObject = (array, value) => {
     return array.reduce((obj, item) => {
         return {
@@ -47,34 +68,56 @@ function simplifyTopic(topic) {
     return topic.split(' ')[0];
 }
 
+// async function getWordBatch({topic, filter}) {
+//     topic = topic.trim();
+//     let currentResult = [];
+//     let currentCriterionIndex = 0;
+
+//     while (currentResult.length === 0 && currentCriterionIndex < criteriaPriorityList.length) {
+//         currentResult = (await dataMuseClient.getWords(
+//             {...arrayToObject(
+//                     criteriaPriorityList[currentCriterionIndex], 
+//                     topic
+//                 ), limit: 5 }
+//             )).map((item) => item.word).filter(filter);
+
+//         if (currentResult.length == 0) {
+//             currentResult = (await dataMuseClient.getWords(
+//                 {...arrayToObject(
+//                         criteriaPriorityList[currentCriterionIndex], 
+//                         simplifyTopic(topic)
+//                     ), limit: 5 }
+//                 )).map((item) => item.word).filter(filter);;
+//         }
+//         currentCriterionIndex++;
+//     }
+
+//     console.log("Got " + JSON.stringify(currentResult));
+
+//     return currentResult;
+// }
+
 async function getWordBatch({topic, filter}) {
     topic = topic.trim();
-    let currentResult = [];
-    let currentCriterionIndex = 0;
 
-    while (currentResult.length === 0 && currentCriterionIndex < criteriaPriorityList.length) {
-        currentResult = (await dataMuseClient.getWords(
-            {...arrayToObject(
-                    criteriaPriorityList[currentCriterionIndex], 
-                    topic
-                ), limit: 5 }
-            )).map((item) => item.word).filter(filter);
+    const requestsToMake = createRequestsWithCriteria(topic);
 
-        if (currentResult.length == 0) {
-            currentResult = (await dataMuseClient.getWords(
-                {...arrayToObject(
-                        criteriaPriorityList[currentCriterionIndex], 
-                        simplifyTopic(topic)
-                    ), limit: 5 }
-                )).map((item) => item.word).filter(filter);;
+    const results = requestsToMake.map(async (func) => {
+        return (await func()).map((item) => item.word).filter(filter);
+    })
+
+    for (const result of results) {
+        const finishedResult = await result;
+        debugger;
+        if (finishedResult.length > 0) {
+            console.log("Got " + JSON.stringify(finishedResult));
+            return finishedResult;
         }
-        currentCriterionIndex++;
     }
 
-    console.log("Got " + JSON.stringify(currentResult));
-
-    return currentResult;
+    return [];
 }
+
 
 async function getLyricsForTopic({topic = undefined, lyricCount = 25} = {}) {
     if (!topic) {
