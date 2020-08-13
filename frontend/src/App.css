@@ -3,7 +3,6 @@
 }
 
 body {
-  /* background-color: #575757; */
   background-image: url("arches.png");
   background-repeat: repeat;
 }
@@ -15,6 +14,14 @@ body {
 .attribution {
   font-size: xx-small;
   color: #cccccc;
+}
+
+.playingIcon {
+  width: 90%;
+}
+
+.controls {
+  margin: 30px;
 }
 
 .attribution a {

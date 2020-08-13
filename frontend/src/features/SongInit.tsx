@@ -26,7 +26,7 @@ export function SongInit() {
 
   return (
     <div className="col init">
-            <form>
+            <form onSubmit={onClickHandler}>
               <label>
                 Sing me a song about:
                 <input className="topicInput" type="text" onChange={ handleTopicInput }/>

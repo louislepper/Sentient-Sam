@@ -1,5 +1,10 @@
 import React, { useEffect } from 'react';
 import * as Tone from 'tone';
+// @ts-ignore
+import { AwesomeButton } from 'react-awesome-button';
+import 'react-awesome-button/dist/themes/theme-c137.css';
+import { useDispatch } from 'react-redux';
+import { restart } from './songSlice';
 
 function promisifyPlayer(audioBuffer: AudioBuffer) {
   return () => {
@@ -55,22 +60,27 @@ async function playSong(words: { word: string; sound: ArrayBufferLike; }[]) {
       
       timeAdd += length + randomTimeChange;
     }
-
-    // for (let i = 0; i < sounds.length; i++) {
-    //   await playerPromises[i]();
-    // }
 }
 
 
 export function PlayingSong(props: {words: { word: string; sound: ArrayBufferLike; }[]}) {
   
+  const dispatch = useDispatch();
+
+  function onClickHandler() {
+      dispatch(restart());
+  }
+
   useEffect(() => {
     playSong(props.words);
   })
   
   return (
     <div className='col-md-4 offset-md-4'>
-      <img src="music_black.svg"></img>
+      <img className='playingIcon' src="music_black.svg"></img>
+      <div className='controls'>
+        <AwesomeButton type="primary" onPress={onClickHandler}>Start Over</AwesomeButton>
+      </div>
     </div>
   );
 }
