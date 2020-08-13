@@ -2,6 +2,35 @@
   text-align: center;
 }
 
+body {
+  background-color: #575757;
+  background-image: url("arches.png");
+  background-repeat: repeat;
+}
+
+.topicInput {
+  margin: 4px;
+}
+
+.attribution {
+  font-size: xx-small;
+  color: #cccccc;
+}
+
+.attribution a {
+  color: #e6e6e6;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.loadingAnimation {
+  width: 100%;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -31,6 +60,7 @@
   display: none;
 }
 .loader-active {
+  transform: scale(3, 3);
   display: block;
 } 
 

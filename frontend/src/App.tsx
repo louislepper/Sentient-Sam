@@ -10,13 +10,12 @@ function App() {
         <div className="row d-flex align-items-center min-vh-100">
           <SongContainer/>
         </div>
-        <div className="aaa">
-            <div className="col attribution">
+      </div>
+      <footer>
+            <div className="attribution">
               Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
             </div>
-        </div>
-      </div>
-      
+        </footer>
     </div>
   );
 }

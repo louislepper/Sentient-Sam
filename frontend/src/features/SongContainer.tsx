@@ -37,7 +37,7 @@ export function SongContainer() {
       )
     case SongStateEnum.LOADING:
       return (
-        <div> 
+        <div className="loadingAnimation"> 
                 {/*
                   // @ts-ignore */}
                 <Loader active={true} color="black" type="line-scale-party"/>

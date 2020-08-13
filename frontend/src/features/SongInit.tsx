@@ -29,7 +29,7 @@ export function SongInit() {
             <form>
               <label>
                 Sing me a song about:
-                <input type="text" onChange={ handleTopicInput }/>
+                <input className="topicInput" type="text" onChange={ handleTopicInput }/>
               </label>
               <div>
                 <AwesomeButton type="primary" onPress={onClickHandler}>Sing for me</AwesomeButton>

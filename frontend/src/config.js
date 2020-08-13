@@ -6,7 +6,7 @@ const dev = {
   
   const prod = {
     apiGateway: {
-        URL: "YOUR_PROD_API_GATEWAY_URL"
+        URL: "/api"
       },
   };
   
