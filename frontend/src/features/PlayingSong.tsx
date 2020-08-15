@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as Tone from 'tone';
 // @ts-ignore
 import { AwesomeButton } from 'react-awesome-button';
@@ -7,19 +7,19 @@ import { useDispatch } from 'react-redux';
 import { restart } from './songSlice';
 
 function xmur3(str: string) {
-  for(var i = 0, h = 1779033703 ^ str.length; i < str.length; i++) {
+  for (var i = 0, h = 1779033703 ^ str.length; i < str.length; i++) {
     h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
     h = h << 13 | h >>> 19;
   }
-  return function() {
-      h = Math.imul(h ^ h >>> 16, 2246822507);
-      h = Math.imul(h ^ h >>> 13, 3266489909);
-      return (h ^= h >>> 16) >>> 0;
+  return function () {
+    h = Math.imul(h ^ h >>> 16, 2246822507);
+    h = Math.imul(h ^ h >>> 13, 3266489909);
+    return (h ^= h >>> 16) >>> 0;
   }
 }
 
 function mulberry32SeededRandom(seed: number) {
-  return function() {
+  return function () {
     var t = seed += 0x6D2B79F5;
     t = Math.imul(t ^ t >>> 15, t | 1);
     t ^= t + Math.imul(t ^ t >>> 7, t | 61);
@@ -27,17 +27,6 @@ function mulberry32SeededRandom(seed: number) {
   }
 }
 
-function promisifyPlayer(audioBuffer: AudioBuffer) {
-  return () => {
-    return new Promise( (resolutionFunc) => {
-      const player = new Tone.Player(audioBuffer).toDestination();
-      player.onstop = resolutionFunc;
-      Tone.loaded().then(() => {
-        player.start();
-      });
-    });
-  }
-}
 function toSampler(audioBuffer: AudioBuffer) {
   return new Tone.Sampler({
     urls: {
@@ -48,105 +37,117 @@ function toSampler(audioBuffer: AudioBuffer) {
 }
 
 async function playSong(words: { word: string; sound: ArrayBufferLike; }[]) {
-    // await Promise.all
+  const sounds: { sound: Tone.Sampler, word: string, duration: number }[] = await Promise.all(
+    words.map(async (item) => {
+      const audioBuffer = await Tone.getContext().decodeAudioData(item.sound.slice(0));
+      return {
+        sound: toSampler(audioBuffer),
+        word: item.word,
+        duration: audioBuffer.duration
+      }
+    })
+  );
 
-    const sounds: {sound: Tone.Sampler, word: string, duration: number}[] = await Promise.all(
-      words.map(async (item) => {
-        const audioBuffer = await Tone.getContext().decodeAudioData(item.sound);
-        return {
-          sound: toSampler(audioBuffer),
-          word: item.word,
-          duration: audioBuffer.duration
-        }
-      })
-    );
+  await Tone.loaded();
 
-    await Tone.loaded();
-
-    const time = Tone.now();
+  debugger;
+  const time = Tone.now();
 
   const random = mulberry32SeededRandom(xmur3(words[0].word)())
-  let timeAdd = 1;
+  let timeAdd = 5;
   const spaceBetween = 0.01;
   const baseNote = 60;
   const cutBy = 0.2;
   const chanceOfPause = 0;
   const lengthOfPause = 1;
   for (let i = 0; i < sounds.length; i++) {
-      const sampler = sounds[i].sound;
-      const length = sounds[i].duration * (1 - cutBy);
-      const deviateNoteBy = 2;
-      const randomNoteChange = Math.floor(random() * deviateNoteBy * 2) - deviateNoteBy;
-      const deviateTimeBy = 0.1;
-      const randomTimeChange = random() * deviateTimeBy * 2 - deviateTimeBy;
-      sampler.triggerAttackRelease([Tone.Midi(baseNote + randomNoteChange).toFrequency()], length + randomTimeChange, time + timeAdd);
-      
-      let pause = 0;
+    const sampler = sounds[i].sound;
+    const length = sounds[i].duration * (1 - cutBy);
+    const deviateNoteBy = 2;
+    const randomNoteChange = Math.floor(random() * deviateNoteBy * 2) - deviateNoteBy;
+    const deviateTimeBy = 0.1;
+    const randomTimeChange = random() * deviateTimeBy * 2 - deviateTimeBy;
+    sampler.triggerAttackRelease([Tone.Midi(baseNote + randomNoteChange).toFrequency()], length + randomTimeChange, time + timeAdd);
 
-      if (random() <= chanceOfPause) {
-        pause = lengthOfPause;
-      }
+    let pause = 0;
 
-      timeAdd += length + randomTimeChange + spaceBetween + pause;
+    if (random() <= chanceOfPause) {
+      pause = lengthOfPause;
     }
 
-    const player = new Tone.Player({
-      url: "/its-not-over-til-the-bossa-nova.mp3", 
-      volume: -13,
-      fadeOut: 2
-      
-    }).toDestination();
-    Tone.loaded().then(() => {
-      player.start(Tone.now(), 0, timeAdd + 3);
-    });
-
-    return () => {
-      for (let i = 0; i < sounds.length; i++) {
-        const sampler = sounds[i].sound;
-        sampler.dispose();
-      }
-      player.stop(Tone.now());
-    }
-}
-
-
-export function PlayingSong(props: {words: { word: string; sound: ArrayBufferLike; }[]}) {
-  
-  const dispatch = useDispatch();
-
-  function triedToStopNullSong() {
-    console.log("Attempted to stop null song");
+    timeAdd += length + randomTimeChange + spaceBetween + pause;
   }
 
+  const player = new Tone.Player({
+    url: "/its-not-over-til-the-bossa-nova.mp3",
+    volume: -13,
+    fadeOut: 2
+
+  }).toDestination();
+  Tone.loaded().then(() => {
+    player.start(Tone.now(), 0, timeAdd + 3);
+  });
+
+  return () => {
+    for (let i = 0; i < sounds.length; i++) {
+      const sampler = sounds[i].sound;
+      sampler.dispose();
+    }
+    player.stop(Tone.now());
+  }
+}
+
+function triedToStopNullSong() {
+  console.log("Attempted to stop null song");
+}
+
+const {
+  stopSong, 
+  setStopSongFunction
+}: {
+  stopSong: () => void, 
+  setStopSongFunction: (f: () => void) => void
+} = (() => {
   let stopSongFunction = triedToStopNullSong;
+return {
+  stopSong: () => {
+    stopSongFunction();
+    stopSongFunction = triedToStopNullSong;
+  },
+  setStopSongFunction: (stopFunction: () => void) => {
+    stopSongFunction = stopFunction;
+  }
+}
+})();
+
+export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLike; }[] }) {
+  const dispatch = useDispatch();
 
   useEffect(() => {
     playSong(props.words).then((stopFunction) => {
-      stopSongFunction = stopFunction;
+      setStopSongFunction(stopFunction);
     })
-    // .catch((e) => {
-    //   debugger;
-    // })
   })
 
   function startOver() {
-    stopSongFunction();
-    stopSongFunction = triedToStopNullSong;
+    stopSong();
     dispatch(restart());
   }
 
   function replay() {
-    stopSongFunction();
-    stopSongFunction = triedToStopNullSong;
+    stopSong();
+    playSong(props.words).then((stopFunction) => {
+      setStopSongFunction(stopFunction);
+    })
   }
 
   function copySongLink() {
     // dispatch(restart());
   }
-  
+
   return (
     <div className='col-md-4 offset-md-4'>
-      <img className='playingIcon' src="music_black.svg"></img>
+      <img className='playingIcon' alt="The song has started playing" src="music_black.svg"></img>
       <div className='controls'>
         <AwesomeButton type="primary" onPress={startOver}>Start Over</AwesomeButton>
         <AwesomeButton type="primary" onPress={replay}>Replay</AwesomeButton>
