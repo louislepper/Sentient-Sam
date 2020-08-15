@@ -5,7 +5,7 @@ const lyricService = require('./lyric-service')
 
 async function getVocalTrackResource(req){
     const topicString = req.query["topic"];
-    const limit = req.query["limit"] || 10;
+    const limit = Math.min(req.query["limit"], 40);
 
     const experiementalResult = await lyricService.getLyricsForTopic({
         topic: topicString,

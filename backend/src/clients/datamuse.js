@@ -35,17 +35,25 @@ async function getWords(constraints = {limit: 100}) {
         limit
     } = constraints;
 
-    const result = await myClient.get('/words', {
-        params: {
-          [RELATED_TO_KEY]: relatedTo,
-          [SOUNDS_LIKE_KEY]: soundsLike,
-          [PERFECT_RHYMES_WITH_KEY]: perfectRhymesWith,
-          [APPROXIMATE_RHYMES_WITH_KEY]: approximateRhymesWith,
-          [USED_TO_DESCRIBE_KEY]: usedToDescribe,
-          [TRIGGERED_BY_KEY]: triggeredBy,
-          max: limit
-        }
-      });
+    let result = [];
+
+    try {
+        result = await myClient.get('/words', {
+            params: {
+              [RELATED_TO_KEY]: relatedTo,
+              [SOUNDS_LIKE_KEY]: soundsLike,
+              [PERFECT_RHYMES_WITH_KEY]: perfectRhymesWith,
+              [APPROXIMATE_RHYMES_WITH_KEY]: approximateRhymesWith,
+              [USED_TO_DESCRIBE_KEY]: usedToDescribe,
+              [TRIGGERED_BY_KEY]: triggeredBy,
+              max: limit
+            }
+          });
+    } catch (e) {
+        console.log("Failed to get results. " + e);
+    }
+
+    
 
       console.log("Made call for: " + cacheKey + "\nGot back: " + JSON.stringify(result.data));
 

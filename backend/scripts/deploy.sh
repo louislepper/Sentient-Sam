@@ -11,4 +11,4 @@ then
     echo "Latest frontend code copied."
 fi
 
-gcloud app deploy
+gcloud app deploy --quiet

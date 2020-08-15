@@ -119,7 +119,7 @@ async function getWordBatch({topic, filter}) {
 }
 
 
-async function getLyricsForTopic({topic = undefined, lyricCount = 25} = {}) {
+async function getLyricsForTopic({topic = undefined, lyricCount = 100} = {}) {
     if (!topic) {
         return [];
     }
