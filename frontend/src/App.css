@@ -16,6 +16,16 @@ body {
   color: #cccccc;
 }
 
+.iconsAttribution {
+  float: left;
+  width: 50%;
+}
+
+.musicAttribution {
+  width: 50%;
+  float: right;
+}
+
 .playingIcon {
   width: 90%;
 }
