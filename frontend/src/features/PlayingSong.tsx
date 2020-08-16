@@ -50,7 +50,6 @@ async function playSong(words: { word: string; sound: ArrayBufferLike; }[]) {
 
   await Tone.loaded();
 
-  debugger;
   const time = Tone.now();
 
   const random = mulberry32SeededRandom(xmur3(words[0].word)())
@@ -146,13 +145,18 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
   }
 
   return (
-    <div className='col-md-4 offset-md-4'>
-      <img className='playingIcon' alt="The song has started playing" src="music_black.svg"></img>
-      <div className='controls'>
-        <AwesomeButton type="primary" onPress={startOver}>Start Over</AwesomeButton>
-        <AwesomeButton type="primary" onPress={replay}>Replay</AwesomeButton>
-        <AwesomeButton type="primary" onPress={copySongLink}>Copy link to song</AwesomeButton>
+    <div>
+      <div className='row justify-content-md-center'>
+        <div className='col-md-4'>
+          <img className='playingIcon' alt="The song has started playing" src="music_black.svg"></img>
+        </div>
+      </div>
+      <div className='row controls justify-content-md-center'>
+        <div className='col-md-auto'><AwesomeButton type="primary" onPress={startOver}>Start Over</AwesomeButton></div>
+        <div className='col-md-auto'><AwesomeButton type="primary" onPress={replay}>Replay</AwesomeButton></div>
+        <div className='col-md-auto'><AwesomeButton type="primary" onPress={copySongLink}>Copy link to song</AwesomeButton></div>
       </div>
     </div>
+    
   );
 }

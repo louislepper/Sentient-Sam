@@ -12,8 +12,8 @@ body {
 }
 
 .attribution {
-  font-size: xx-small;
-  color: #cccccc;
+  font-size: 0.7vw;
+  color: #cdcdcd;
 }
 
 .iconsAttribution {
@@ -78,7 +78,7 @@ footer {
 }
 .loader-active {
   transform: scale(3, 3);
-  display: block;
+  display: inline-block;
 } 
 
 @keyframes App-logo-float {
