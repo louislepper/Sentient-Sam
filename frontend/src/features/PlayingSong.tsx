@@ -5,27 +5,7 @@ import { AwesomeButton } from 'react-awesome-button';
 import 'react-awesome-button/dist/themes/theme-c137.css';
 import { useDispatch } from 'react-redux';
 import { restart } from './songSlice';
-
-function xmur3(str: string) {
-  for (var i = 0, h = 1779033703 ^ str.length; i < str.length; i++) {
-    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
-    h = h << 13 | h >>> 19;
-  }
-  return function () {
-    h = Math.imul(h ^ h >>> 16, 2246822507);
-    h = Math.imul(h ^ h >>> 13, 3266489909);
-    return (h ^= h >>> 16) >>> 0;
-  }
-}
-
-function mulberry32SeededRandom(seed: number) {
-  return function () {
-    var t = seed += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  }
-}
+import { psudorandomGeneratorFromString } from './SeededPsudoRandomGenerator';
 
 function toSampler(audioBuffer: AudioBuffer) {
   return new Tone.Sampler({
@@ -52,7 +32,7 @@ async function playSong(words: { word: string; sound: ArrayBufferLike; }[]) {
 
   const time = Tone.now();
 
-  const random = mulberry32SeededRandom(xmur3(words[0].word)())
+  const random = psudorandomGeneratorFromString(words[0].word);
   let timeAdd = 5;
   const spaceBetween = 0.01;
   const baseNote = 60;
