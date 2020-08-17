@@ -113,14 +113,65 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
     dispatch(restart());
   }
 
+  function fallbackCopyTextToClipboard(text: string) {
+    let textArea = document.createElement("textarea");
+    textArea.value = text;
+    
+    // Avoid scrolling to bottom
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+  
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+  
+    try {
+      let successful = document.execCommand('copy');
+      let msg = successful ? 'successful' : 'unsuccessful';
+      console.log('Fallback: Copying text command was ' + msg);
+    } catch (err) {
+      console.error('Fallback: Oops, unable to copy', err);
+    }
+  
+    document.body.removeChild(textArea);
+  }
+  function copyTextToClipboard(text: string) {
+    if (!window.navigator.clipboard) {
+      fallbackCopyTextToClipboard(text);
+      return;
+    }
+    window.navigator.clipboard.writeText(text).then(function() {
+      console.log('Async: Copying to clipboard was successful!');
+    }, function(err) {
+      console.error('Async: Could not copy text: ', err);
+    });
+  }
+
   function replay() {
     stopSong();
-    playSong(props.words).then((stopFunction) => {
+    Tone.start().then(() => {
+      return playSong(props.words);
+    }).then((stopFunction) => {
       setStopSongFunction(stopFunction);
     })
   }
 
   function copySongLink() {
+    // @ts-ignore
+    if (window.navigator.share) {
+      // @ts-ignore
+      window.navigator.share({
+        title: 'Sentient Sam sings about ' + props.words[0].word,
+        text: 'Check out Sentient Sam. A robo-poet who\'ll sing about whatever you want it to.' ,
+        url: window.location.href,
+      })
+        .then(() => console.log('Successful share'))
+        .catch((error: any) => console.log('Error sharing', error));
+    } else {
+      copyTextToClipboard(window.location.href);
+      console.log("copied link to clipboard");
+    }
     // dispatch(restart());
   }
 

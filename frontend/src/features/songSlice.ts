@@ -58,8 +58,14 @@ export const songSlice = createSlice({
   },
 });
 
-export const { restart } = songSlice.actions;
+const innerRestart = songSlice.actions.restart;
 const { receiveSong, selectTopic } = songSlice.actions;
+
+export const restart = (): AppThunk => dispatch => {
+  // @ts-ignore
+  window.history.pushState({}, '', "/");
+  dispatch(innerRestart());
+}
 
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
@@ -67,6 +73,9 @@ const { receiveSong, selectTopic } = songSlice.actions;
 // code can then be executed and other actions can be dispatched
 export const fetchSong = (topic: string): AppThunk => dispatch => {
   dispatch(selectTopic(topic))
+      
+  // @ts-ignore
+  window.history.pushState({topic}, topic, "?topic=" + topic);
 
   let queryParams = new URLSearchParams();
   queryParams.append("topic", topic);
