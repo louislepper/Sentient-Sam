@@ -6,6 +6,7 @@ import 'react-awesome-button/dist/themes/theme-c137.css';
 import { useDispatch } from 'react-redux';
 import { restart } from './songSlice';
 import { psudorandomGeneratorFromString } from './SeededPsudoRandomGenerator';
+import { useAlert } from 'react-alert';
 
 function toSampler(audioBuffer: AudioBuffer) {
   return new Tone.Sampler({
@@ -113,6 +114,8 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
     dispatch(restart());
   }
 
+  const alert = useAlert();
+
   function fallbackCopyTextToClipboard(text: string) {
     let textArea = document.createElement("textarea");
     textArea.value = text;
@@ -171,6 +174,7 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
     } else {
       copyTextToClipboard(window.location.href);
       console.log("copied link to clipboard");
+      alert.show("Copied link to clipboard");
     }
     // dispatch(restart());
   }

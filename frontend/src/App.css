@@ -72,6 +72,9 @@ footer {
   color: rgb(112, 76, 182);
 }
 
+#__react-alert__ div {
+  text-transform: initial!important;
+}
 
 .loader-hidden {
   display: none;
