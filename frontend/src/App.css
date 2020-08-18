@@ -25,6 +25,12 @@ body {
 text-decoration: none;
 }
 
+.iphoneHint {
+  margin: 10px;
+  font-style: italic;
+  font-size: 9px;
+}
+
 .attribution a {
   color: #c7a4a4;
 }

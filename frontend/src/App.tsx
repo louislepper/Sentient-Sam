@@ -1,9 +1,14 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { SongContainer } from './features/SongContainer';
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
+import { AboutContent } from './features/AboutContent';
 
 function App() {
+  const [aboutModalOpen, setAboutModalOpen] = useState(false);
+
   return (
     <div className="App">
       <header>
@@ -12,9 +17,12 @@ function App() {
             <button 
               type="button"
               className="link-button" 
-              onClick={() => alert("hi")}>
+              onClick={() => setAboutModalOpen(true)}>
                 About
             </button>
+            <Modal open={aboutModalOpen} onClose={() => setAboutModalOpen(false)} center>
+              <AboutContent/>
+            </Modal>
           </div>
         </nav>
       </header>

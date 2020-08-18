@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { AwesomeButton } from 'react-awesome-button';
 import 'react-awesome-button/dist/themes/theme-c137.css';
 import * as Tone from 'tone';
+import { isIOS } from './ios-utils';
 
 import {
   fetchSong,
@@ -47,6 +48,9 @@ export function SongInit() {
               <div>
                 <AwesomeButton type="primary" onPress={onClickHandler}>Sing for me</AwesomeButton>
               </div>
+              {isIOS() &&
+                <div className="iphoneHint"><p>Don't forget to unsilence your iphone (the physical switch on the left of the phone) </p></div>
+              }
             </form>
           </div>
   );
