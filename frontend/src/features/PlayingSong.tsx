@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { restart } from './songSlice';
 import { psudorandomGeneratorFromString } from './SeededPsudoRandomGenerator';
 import { useAlert } from 'react-alert';
+import { copyTextToClipboard } from './clipboard-utils';
 
 function toSampler(audioBuffer: AudioBuffer) {
   return new Tone.Sampler({
@@ -116,41 +117,6 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
 
   const alert = useAlert();
 
-  function fallbackCopyTextToClipboard(text: string) {
-    let textArea = document.createElement("textarea");
-    textArea.value = text;
-    
-    // Avoid scrolling to bottom
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-  
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-  
-    try {
-      let successful = document.execCommand('copy');
-      let msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Fallback: Copying text command was ' + msg);
-    } catch (err) {
-      console.error('Fallback: Oops, unable to copy', err);
-    }
-  
-    document.body.removeChild(textArea);
-  }
-  function copyTextToClipboard(text: string) {
-    if (!window.navigator.clipboard) {
-      fallbackCopyTextToClipboard(text);
-      return;
-    }
-    window.navigator.clipboard.writeText(text).then(function() {
-      console.log('Async: Copying to clipboard was successful!');
-    }, function(err) {
-      console.error('Async: Could not copy text: ', err);
-    });
-  }
-
   function replay() {
     stopSong();
     Tone.start().then(() => {
@@ -176,7 +142,6 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
       console.log("copied link to clipboard");
       alert.show("Copied link to clipboard");
     }
-    // dispatch(restart());
   }
 
   return (
@@ -192,6 +157,5 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
         <div className='col-md-auto'><AwesomeButton type="primary" onPress={copySongLink}>Copy link to song</AwesomeButton></div>
       </div>
     </div>
-    
   );
 }

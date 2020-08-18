@@ -79,7 +79,7 @@ export const fetchSong = (topic: string): AppThunk => dispatch => {
 
   let queryParams = new URLSearchParams();
   queryParams.append("topic", topic);
-  queryParams.append("limit", "25");
+  queryParams.append("limit", "27");
   
   fetch(`${apiGatewayUrl}/vocalTrack?${queryParams.toString()}`)
         .then(response => {
