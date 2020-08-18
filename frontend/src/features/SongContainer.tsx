@@ -21,9 +21,7 @@ export function SongContainer() {
   switch(stage) {
     case SongStateEnum.SELECTION:
       return (
-        <div className='col'>
           <SongInit/>
-        </div>
       );
     case SongStateEnum.PLAYING:
         if (words == null) {
@@ -31,9 +29,7 @@ export function SongContainer() {
         }
 
       return (
-        <div className='col'>
           <PlayingSong words={words}/>
-        </div>
       )
     case SongStateEnum.LOADING:
       return (

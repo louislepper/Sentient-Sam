@@ -6,8 +6,20 @@ import { SongContainer } from './features/SongContainer';
 function App() {
   return (
     <div className="App">
-      <div className="container">
-        <div className="row d-flex align-items-center min-vh-100">
+      <header>
+        <nav>
+          <div className="navButtons">
+            <button 
+              type="button"
+              className="link-button" 
+              onClick={() => alert("hi")}>
+                About
+            </button>
+          </div>
+        </nav>
+      </header>
+      <div className="container min-vh-100 song-container">
+        <div className="row min-vh-100 justify-content-center align-items-center">
           <SongContainer/>
         </div>
       </div>

@@ -145,7 +145,7 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
   }
 
   return (
-    <div>
+    <div className='col'>
       <div className='row justify-content-md-center'>
         <div className='col-md-4'>
           <img className='playingIcon' alt="The song has started playing" src="music_black.svg"></img>
