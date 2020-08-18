@@ -5,6 +5,7 @@
   "scripts": {
     "start": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" node ./bin/www",
     "debug": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" node --inspect-brk ./bin/www",
+    "deploy": "./scripts/deploy.sh",
     "test": "jest"
   },
   "dependencies": {
