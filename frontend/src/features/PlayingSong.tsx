@@ -19,7 +19,10 @@ function toSampler(audioBuffer: AudioBuffer) {
   }).toDestination();
 }
 
+let songPlaying = false;
+
 async function playSong(words: { word: string; sound: ArrayBufferLike; }[]) {
+  songPlaying = true;
   const sounds: { sound: Tone.Sampler, word: string, duration: number }[] = await Promise.all(
     words.map(async (item) => {
       const audioBuffer = await Tone.getContext().decodeAudioData(item.sound.slice(0));
@@ -76,6 +79,7 @@ async function playSong(words: { word: string; sound: ArrayBufferLike; }[]) {
       sampler.dispose();
     }
     player.stop(Tone.now());
+    songPlaying = false;
   }
 }
 
@@ -106,10 +110,12 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
   const dispatch = useDispatch();
 
   useEffect(() => {
-    playSong(props.words).then((stopFunction) => {
-      setStopSongFunction(stopFunction);
-    })
-  })
+    if (!songPlaying) {
+      playSong(props.words).then((stopFunction) => {
+        setStopSongFunction(stopFunction);
+      });
+    }
+  });
 
   function startOver() {
     stopSong();

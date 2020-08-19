@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 // @ts-ignore
 import { AwesomeButton } from 'react-awesome-button';
 import 'react-awesome-button/dist/themes/theme-c137.css';
-import * as Tone from 'tone';
 import { isIOS } from './ios-utils';
 import { startTone } from './start-tone';
 
