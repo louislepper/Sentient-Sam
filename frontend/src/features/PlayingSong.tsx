@@ -8,6 +8,7 @@ import { restart } from './songSlice';
 import { psudorandomGeneratorFromString } from './SeededPsudoRandomGenerator';
 import { useAlert } from 'react-alert';
 import { copyTextToClipboard } from './clipboard-utils';
+import { startTone } from './start-tone';
 
 function toSampler(audioBuffer: AudioBuffer) {
   return new Tone.Sampler({
@@ -119,9 +120,9 @@ export function PlayingSong(props: { words: { word: string; sound: ArrayBufferLi
 
   function replay() {
     stopSong();
-    Tone.start().then(() => {
+    startTone().then(() => {
       return playSong(props.words);
-    }).then((stopFunction) => {
+    }).then((stopFunction: () => void) => {
       setStopSongFunction(stopFunction);
     })
   }

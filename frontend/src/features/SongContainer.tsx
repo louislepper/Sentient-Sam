@@ -5,14 +5,6 @@ import { SongStateEnum, selectSongStage, selectWords } from './songSlice';
 import { PlayingSong } from './PlayingSong';
 import 'loaders.css/loaders.css';
 import Loader from 'react-loaders'
-import * as Tone from 'tone';
-
-// Hack for audio context resumption in ios
-document.documentElement.addEventListener(
-  "mousedown", function(){
-    if (Tone.context.state !== 'running') {
-    Tone.context.resume();
-  }});
 
 function invalidState() {
   return (

@@ -5,6 +5,7 @@ import { AwesomeButton } from 'react-awesome-button';
 import 'react-awesome-button/dist/themes/theme-c137.css';
 import * as Tone from 'tone';
 import { isIOS } from './ios-utils';
+import { startTone } from './start-tone';
 
 import {
   fetchSong,
@@ -30,7 +31,7 @@ export function SongInit() {
   }, [])
 
   function onClickHandler() {
-      Tone.start();
+      startTone();
       dispatch(fetchSong(topic));
   }
 
@@ -49,7 +50,7 @@ export function SongInit() {
                 <AwesomeButton type="primary" onPress={onClickHandler}>Sing for me</AwesomeButton>
               </div>
               {isIOS() &&
-                <div className="iphoneHint"><p>Don't forget to unsilence your iphone (the physical switch on the left of the phone) </p></div>
+                <div className="iphoneHint"><p>Don't forget to unsilence your iphone (the physical switch on the top left of the phone) </p></div>
               }
             </form>
           </div>
