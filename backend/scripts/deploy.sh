@@ -4,12 +4,7 @@ read -p "Do you want to copy the latest frontend code in before deploying? " -n 
 echo    # (optional) move to a new line
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    rm -rf ./public/*
-    cd ../frontend
-    yarn predeploy:prod
-    cp -R build/* ../backend/public/
-    cd ../backend 
-    echo "Latest frontend code copied."
+	./scripts/copy-frontend-code.sh
 fi
 
 gcloud app deploy --quiet
