@@ -55,6 +55,10 @@ text-decoration: none;
   margin: 30px;
 }
 
+.control-buttons {
+  margin: 3px;
+}
+
 footer {
   position: absolute;
   bottom: 0;

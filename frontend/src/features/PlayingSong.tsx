@@ -62,9 +62,9 @@ export function PlayingSong(props: {
         </div>
       </div>
       <div className='row controls justify-content-md-center'>
-        <div className='col-md-auto'><AwesomeButton type="primary" onPress={startOver}>Start Over</AwesomeButton></div>
-        <div className='col-md-auto'><AwesomeButton type="primary" onPress={replay}>Replay</AwesomeButton></div>
-        <div className='col-md-auto'><AwesomeButton type="primary" onPress={copySongLink}>Copy link to song</AwesomeButton></div>
+        <div className='col-md-auto control-buttons'><AwesomeButton type="primary" onPress={startOver}>Start Over</AwesomeButton></div>
+        <div className='col-md-auto control-buttons'><AwesomeButton type="primary" onPress={replay}>Replay</AwesomeButton></div>
+        <div className='col-md-auto control-buttons'><AwesomeButton type="primary" onPress={copySongLink}>Copy link to song</AwesomeButton></div>
       </div>
     </div>
   );
