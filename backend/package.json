@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" node ./bin/www",
+    "debug": "env GOOGLE_APPLICATION_CREDENTIALS=\"./google-auth-local-dev-key.json\" node --inspect-brk ./bin/www",
+    "deploy": "./scripts/deploy.sh",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^3.1.0",
+    "axios": "^0.19.2",
+    "convict": "^6.0.0",
+    "convict-format-with-validator": "^6.0.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "qs": "^6.9.4"
+  },
+  "devDependencies": {
+    "jest": "^26.2.2"
+  }
+}
