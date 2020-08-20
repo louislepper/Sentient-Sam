@@ -11,33 +11,34 @@ async function getWord(word) {
         return dumbCache.get(word);
     }
 
-    // Construct the request
-    const request = {
-    input: {text: word},
-    // Select the language and SSML voice gender (optional)
-    voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
-    // select the type of audio encoding
-    audioConfig: {audioEncoding: 'MP3'},
-    };
-
-    // Performs the text-to-speech request
     try {
-        const [response] = await client.synthesizeSpeech(request);
-        const result = {audioContent: response.audioContent.toString('base64'), word};
+        const result = directlyGetWord(word);
         dumbCache.set(word, result);
         return result;
     } catch (e) {
-        // Try  once more:
+        // Try once more:
         console.log("Google call failed, but trying once again. ");
-        const result = {audioContent: response.audioContent.toString('base64'), word};
+        const result = directlyGetWord(word);
         dumbCache.set(word, result);
         return result;
     }
 }
 
-// async function getSentence() {
-    
-// }
+async function directlyGetWord(word) {
+    // Construct the request
+    const request = {
+        input: {text: word},
+        // Select the language and SSML voice gender (optional)
+        voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
+        // select the type of audio encoding
+        audioConfig: {audioEncoding: 'MP3'},
+        };
+    const [response] = await client.synthesizeSpeech(request);
+    return {
+        wordSound: response.audioContent.toString('base64'), 
+        wordString: word
+    };
+}
 
 module.exports = {
     getWord
