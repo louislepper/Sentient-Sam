@@ -1,6 +1,8 @@
 body {
   background-image: url("arches.png");
   background-repeat: repeat;
+  /* Hack for weird extra space at bottom of screen on IOS */
+  overflow: hidden;
 }
 
 .topicInput {
