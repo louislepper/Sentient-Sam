@@ -5,6 +5,7 @@ import { AwesomeButton } from 'react-awesome-button';
 import 'react-awesome-button/dist/themes/theme-c137.css';
 import { isIOS } from './ios-utils';
 import { startTone } from './start-tone';
+import { initSong, startSong } from './audio-controller';
 
 import {
   fetchSong,
@@ -29,9 +30,18 @@ export function SongInit() {
     }
   }, [])
 
-  function onClickHandler() {
-      startTone();
-      dispatch(fetchSong(topic));
+  async function onClickHandler() {
+      // Start up tone
+      const tonePromise = startTone();
+      // Fetch the song
+      const songData = await dispatch(fetchSong(topic));
+
+      // Wait for tone to have finished starting up (likely already finished)
+      await tonePromise;
+
+      // @ts-ignore
+      await initSong(songData, topic);
+      startSong();
   }
 
   function handleTopicInput(e: React.ChangeEvent<HTMLInputElement>) {

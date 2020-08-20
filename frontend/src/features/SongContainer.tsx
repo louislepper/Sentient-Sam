@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { SongInit } from './SongInit';
-import { SongStateEnum, selectSongStage, selectWords } from './songSlice';
+import { SongStateEnum, selectSongStage, getWordsSelector, getTopicSelector } from './songSlice';
 import { PlayingSong } from './PlayingSong';
 import 'loaders.css/loaders.css';
 import Loader from 'react-loaders'
@@ -16,7 +16,8 @@ function invalidState() {
 
 export function SongContainer() {
   const stage = useSelector(selectSongStage);
-  const words = useSelector(selectWords);
+  const words = useSelector(getWordsSelector);
+  const topic = useSelector(getTopicSelector);
 
   switch(stage) {
     case SongStateEnum.SELECTION:
@@ -24,12 +25,12 @@ export function SongContainer() {
           <SongInit/>
       );
     case SongStateEnum.PLAYING:
-        if (words == null) {
+        if (words == null || topic == null) {
           return invalidState();
         }
 
       return (
-          <PlayingSong words={words}/>
+          <PlayingSong words={words} topic={topic}/>
       )
     case SongStateEnum.LOADING:
       return (

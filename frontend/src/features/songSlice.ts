@@ -5,8 +5,8 @@ import config from '../config';
 const apiGatewayUrl = config.apiGateway.URL;
 
 export interface WordResult {
-  word: string;
-  sound: string;
+  wordString: string;
+  wordSound: string;
 }
 
 interface SongState {
@@ -67,41 +67,53 @@ export const restart = (): AppThunk => dispatch => {
   dispatch(innerRestart());
 }
 
+interface ProcessedWord {
+  wordString: string,
+  wordSound: ArrayBufferLike
+}
+
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched
-export const fetchSong = (topic: string): AppThunk => dispatch => {
+export const fetchSong = (topic: string): AppThunk<Promise<ProcessedWord[]>> => dispatch => {
   dispatch(selectTopic(topic))
       
-  // @ts-ignore
   window.history.pushState({topic}, topic, "?topic=" + topic);
 
   let queryParams = new URLSearchParams();
   queryParams.append("topic", topic);
   queryParams.append("limit", "27");
   
-  fetch(`${apiGatewayUrl}/vocalTrack?${queryParams.toString()}`)
+  return fetch(`${apiGatewayUrl}/vocalTrack?${queryParams.toString()}`)
         .then(response => {
             return response.json();
         })
-        .then(json => {          
-          dispatch(receiveSong({
+        .then(json => {     
+          const result = {
             topic: json.topic, 
             words: json.words
-          }));
+          };  
+          dispatch(receiveSong(result));
+          return processWords(result.words);
         });
 };
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectWords = (state: RootState) => state.song.words?.map(({word, sound})=> {
-  return {
-    word, 
-    sound: Uint8Array.from(atob(sound), c => c.charCodeAt(0)).buffer
-  }
-});
+export const getWordsSelector = (state: RootState) => processWords(state.song.words || []);
+export const getTopicSelector = (state: RootState) => state.song.topic;
+
+function processWords(words: WordResult[]) {
+  return words.map(({wordSound, wordString})=> {
+    return {
+      wordString, 
+      wordSound: Uint8Array.from(atob(wordSound), c => c.charCodeAt(0)).buffer
+    }
+  });
+}
+
 export const selectSongStage = (state: RootState) => state.song.songStage;
 
 export default songSlice.reducer;
