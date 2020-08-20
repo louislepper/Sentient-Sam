@@ -15,6 +15,7 @@ export function AboutContent() {
                 If you have any questions or comments let me know 
                 at <a href="mailto:public@louislepper.co.nz">public@louislepper.co.nz</a>
             </p>
+            <p>Check out the sourcecode at <a href="https://github.com/louislepper/Sentient-Sam">https://github.com/louislepper/Sentient-Sam</a>.</p>
             <p>
             Thank you very much to <a href="https://www.freepik.com/">freepik.com</a> for 
             the royalty free images, 
