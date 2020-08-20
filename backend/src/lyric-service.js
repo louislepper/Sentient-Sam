@@ -36,23 +36,26 @@ const criteriaPriorityList = [
 ];
 
 function createRequestsWithCriteria(topic) {
-    return criteriaPriorityList.flatMap((criteria) => {
-        const onTopicDirectly = () => dataMuseClient.getWords(
+    const mainCriteria = criteriaPriorityList.map((criteria) => {
+        return () => dataMuseClient.getWords(
             {...arrayToObject(
                     criteria, 
                     topic
                 ), limit: 5 }
             );
+    })
 
-        const onSanitisedTopic = () => dataMuseClient.getWords(
-            {...arrayToObject(
-                    criteria, 
-                    simplifyTopic(topic)
-                ), limit: 5 }
-            );;
-
-        return [onTopicDirectly, onSanitisedTopic];
+    const splitTopic = topic.split(' ');
+    const everythingTriggeredBy = () => dataMuseClient.getWords({
+        perfectRhymesWith: [splitTopic[splitTopic.length - 1]],
+        triggeredBy: [...splitTopic],
+        limit: 5
     });
+
+    return [
+        ...mainCriteria,
+        everythingTriggeredBy
+    ];
 }
 
 const arrayToObject = (array, value) => {
@@ -68,35 +71,6 @@ function simplifyTopic(topic) {
     return topic.split(' ')[0];
 }
 
-// async function getWordBatch({topic, filter}) {
-//     topic = topic.trim();
-//     let currentResult = [];
-//     let currentCriterionIndex = 0;
-
-//     while (currentResult.length === 0 && currentCriterionIndex < criteriaPriorityList.length) {
-//         currentResult = (await dataMuseClient.getWords(
-//             {...arrayToObject(
-//                     criteriaPriorityList[currentCriterionIndex], 
-//                     topic
-//                 ), limit: 5 }
-//             )).map((item) => item.word).filter(filter);
-
-//         if (currentResult.length == 0) {
-//             currentResult = (await dataMuseClient.getWords(
-//                 {...arrayToObject(
-//                         criteriaPriorityList[currentCriterionIndex], 
-//                         simplifyTopic(topic)
-//                     ), limit: 5 }
-//                 )).map((item) => item.word).filter(filter);;
-//         }
-//         currentCriterionIndex++;
-//     }
-
-//     console.log("Got " + JSON.stringify(currentResult));
-
-//     return currentResult;
-// }
-
 async function getWordBatch({topic, filter}) {
     topic = topic.trim();
 
@@ -108,7 +82,6 @@ async function getWordBatch({topic, filter}) {
 
     for (const result of results) {
         const finishedResult = await result;
-        debugger;
         if (finishedResult.length > 0) {
             console.log("Got " + JSON.stringify(finishedResult));
             return finishedResult;
@@ -124,8 +97,6 @@ async function getLyricsForTopic({topic = undefined, lyricCount = 100} = {}) {
         return [];
     }
 
-    debugger;
-
     const result = [];
     const stack = [];
     const lyricSet = new Set();
@@ -134,11 +105,18 @@ async function getLyricsForTopic({topic = undefined, lyricCount = 100} = {}) {
     lyricSet.add(topic);
     while(stack.length > 0 && result.length < lyricCount) {
         const currentWord = stack.pop();
-        const nextBatch = (
-            await getWordBatch({
-                topic: currentWord, filter: (item) => !lyricSet.has(item)
-            })
-            );
+        const nextBatch = await getWordBatch(
+            {
+                topic: currentWord, 
+                filter: (item) => !lyricSet.has(item)
+            }
+        );
+
+        if (nextBatch.length === 0) {
+            stack.push(...currentWord.split(' ').sort((a,b) => a.length - b.length))
+        }
+
+        console.log(currentWord + " -> " + JSON.stringify(nextBatch));
 
         nextBatch.forEach((item) => {
             lyricSet.add(item);
@@ -146,6 +124,8 @@ async function getLyricsForTopic({topic = undefined, lyricCount = 100} = {}) {
 
         result.push(...nextBatch);
         stack.push(...nextBatch);
+
+        
     }
 
     return result;
