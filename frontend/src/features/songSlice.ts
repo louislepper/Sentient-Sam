@@ -76,7 +76,7 @@ interface ProcessedWord {
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched
-export const fetchSong = (topic: string): AppThunk<Promise<ProcessedWord[]>> => dispatch => {
+export const fetchSong = (topic: string): AppThunk<Promise<ProcessedWord[] | null>> => dispatch => {
   dispatch(selectTopic(topic))
       
   window.history.pushState({topic}, topic, "?topic=" + topic);
@@ -96,6 +96,11 @@ export const fetchSong = (topic: string): AppThunk<Promise<ProcessedWord[]>> => 
           };  
           dispatch(receiveSong(result));
           return processWords(result.words);
+        })
+        .catch(e => {
+          console.log("Unable to fetch song - " + e);
+          dispatch(restart());
+          return null;
         });
 };
 

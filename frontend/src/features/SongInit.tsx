@@ -39,9 +39,11 @@ export function SongInit() {
       // Wait for tone to have finished starting up (likely already finished)
       await tonePromise;
 
-      // @ts-ignore
-      await initSong(songData, topic);
-      startSong();
+      if (songData) {
+        // @ts-ignore
+        await initSong(songData, topic);
+        startSong();
+      }
   }
 
   function handleTopicInput(e: React.ChangeEvent<HTMLInputElement>) {
