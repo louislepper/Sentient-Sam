@@ -105,7 +105,7 @@ async function getLyricsForTopic({topic = undefined, lyricCount = 100} = {}) {
     lyricSet.add(topic);
     while(stack.length > 0 && result.length < lyricCount) {
         const currentWord = stack.pop();
-        const nextBatch = await getWordBatch(
+        let nextBatch = await getWordBatch(
             {
                 topic: currentWord, 
                 filter: (item) => !lyricSet.has(item)
@@ -113,7 +113,10 @@ async function getLyricsForTopic({topic = undefined, lyricCount = 100} = {}) {
         );
 
         if (nextBatch.length === 0) {
-            stack.push(...currentWord.split(' ').sort((a,b) => a.length - b.length))
+            nextBatch = currentWord
+                .split(' ')
+                .sort((a,b) => a.length - b.length)
+                .filter((item => !lyricSet.has(item)))
         }
 
         console.log(currentWord + " -> " + JSON.stringify(nextBatch));
