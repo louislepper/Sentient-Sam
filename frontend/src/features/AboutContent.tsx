@@ -5,7 +5,7 @@ export function AboutContent() {
         <div className="aboutContent">
             <h2>Sentient Sam</h2>
             <p>
-                Sentient Sam is a robot poet designed by Louis Lepper. 
+                Sentient Sam is a robot poet designed by <a href="http://louislepper.co.nz">Louis Lepper</a>. 
             </p>
             <p>
                 Be aware that Sam doesn't have a filter, 

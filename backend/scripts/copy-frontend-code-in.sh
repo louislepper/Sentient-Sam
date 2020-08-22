@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
-rm -rf ./public/*
+rm -f ./public/* || true
 cd ../frontend
 yarn install
 yarn predeploy:prod

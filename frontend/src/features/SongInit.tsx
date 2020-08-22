@@ -34,13 +34,13 @@ export function SongInit() {
       // Start up tone
       const tonePromise = startTone();
       // Fetch the song
-      const songData = await dispatch(fetchSong(topic));
+      // @ts-ignore
+      const songData: { wordString: string; wordSound: ArrayBufferLike; }[] = await dispatch(fetchSong(topic));
 
       // Wait for tone to have finished starting up (likely already finished)
       await tonePromise;
 
       if (songData) {
-        // @ts-ignore
         await initSong(songData, topic);
         startSong();
       }
