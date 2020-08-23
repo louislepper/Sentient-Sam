@@ -97,6 +97,8 @@ async function getLyricsForTopic({topic = undefined, lyricCount = 100} = {}) {
         return [];
     }
 
+    topic = topic.trim().toLowerCase();
+
     const result = [];
     const stack = [];
     const lyricSet = new Set();
