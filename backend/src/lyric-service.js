@@ -77,7 +77,8 @@ async function getWordBatch({topic, filter}) {
     const requestsToMake = createRequestsWithCriteria(topic);
 
     const results = requestsToMake.map(async (func) => {
-        return (await func()).map((item) => item.word).filter(filter);
+        const wordResult = (await func()) || [];
+        return wordResult.map((item) => item.word).filter(filter);
     })
 
     for (const result of results) {
