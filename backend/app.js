@@ -16,7 +16,13 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), {
+  cacheControl: false, 
+  setHeaders: function(res, path) { 
+    res.setHeader("Cache-Control","no-store no-cache");
+    res.removeHeader("ETag");
+  }
+}));
 
 app.use('/api', apiRouter);
 
