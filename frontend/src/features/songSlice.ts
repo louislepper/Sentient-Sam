@@ -12,7 +12,7 @@ export interface WordResult {
 interface SongState {
   songStage: SongStateEnum;
   topic: string | null;
-  words: Array<WordResult> | null;
+  words: Array<string> | null;
 }
 
 interface SongResultPayload {
@@ -47,7 +47,7 @@ export const songSlice = createSlice({
     receiveSong: (state, action: PayloadAction<SongResultPayload>) => {
       state.songStage = SongStateEnum.PLAYING;
       state.topic = action.payload.topic;
-      state.words = action.payload.words;
+      state.words = action.payload.words.map((word) => word.wordString);
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
     restart: (state) => {
@@ -72,6 +72,16 @@ interface ProcessedWord {
   wordSound: ArrayBufferLike
 }
 
+function typedFetch<T>(url: string): Promise<T> {
+  return fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+      return response.json() as Promise<T>
+    });
+}
+
 // The function below is called a thunk and allows us to perform async logic. It
 // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This
 // will call the thunk with the `dispatch` function as the first argument. Async
@@ -85,14 +95,11 @@ export const fetchSong = (topic: string): AppThunk<Promise<ProcessedWord[] | nul
   queryParams.append("topic", topic);
   queryParams.append("limit", "27");
   
-  return fetch(`${apiGatewayUrl}/vocalTrack?${queryParams.toString()}`)
-        .then(response => {
-            return response.json();
-        })
+  return typedFetch<SongResultPayload>(`${apiGatewayUrl}/vocalTrack?${queryParams.toString()}`)
         .then(json => {     
           const result = {
             topic: json.topic, 
-            words: []
+            words: json.words
           };  
           dispatch(receiveSong(result));
           return processWords(json.words);
@@ -107,7 +114,7 @@ export const fetchSong = (topic: string): AppThunk<Promise<ProcessedWord[] | nul
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const getWordsSelector = (state: RootState) => processWords(state.song.words || []);
+export const getWordsSelector = (state: RootState) => state.song.words || [];
 export const getTopicSelector = (state: RootState) => state.song.topic;
 
 function processWords(words: WordResult[]) {

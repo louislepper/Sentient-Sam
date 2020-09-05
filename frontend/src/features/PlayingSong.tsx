@@ -10,10 +10,7 @@ import { startTone } from './start-tone';
 import { clearSong, startSong, stopSong } from './audio-controller';
 
 export function PlayingSong(props: { 
-  words: { 
-    wordString: string; 
-    wordSound: ArrayBufferLike; 
-  }[] ,
+  words: string[],
   topic: string
 }) {
   const dispatch = useDispatch();
