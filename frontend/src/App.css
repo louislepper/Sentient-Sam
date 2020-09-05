@@ -3,8 +3,14 @@ body {
   background-repeat: repeat;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Bad+Script&display=swap');
+
 .topicInput {
   margin: 4px;
+}
+
+h1 {
+  font-family: 'Bad Script', cursive;
 }
 
 .attribution {
@@ -46,11 +52,18 @@ text-decoration: none;
 }
 
 .playingIcon {
+  margin-top: 50px;
   width: 90%;
+  height: 58%;
 }
 
 .controls {
-  margin: 30px;
+  margin-top: -15px;
+  margin-bottom: 30px;
+}
+
+.songTitle {
+  margin-top: 30px;
 }
 
 .control-buttons {

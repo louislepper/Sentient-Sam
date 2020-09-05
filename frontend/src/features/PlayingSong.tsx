@@ -55,6 +55,7 @@ export function PlayingSong(props: {
       <div className='row justify-content-md-center'>
         <div className='col-md-4'>
           <img className='playingIcon' alt="The song has started playing" src="music_black.svg"></img>
+          <h1 className="songTitle">“{props.topic}”</h1>
         </div>
       </div>
       <div className='row controls justify-content-md-center'>

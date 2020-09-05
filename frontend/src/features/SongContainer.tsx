@@ -38,6 +38,10 @@ export function SongContainer() {
                 {/*
                   // @ts-ignore */}
                 <Loader active={true} color="black" type="line-scale-party"/>
+                <br/>
+                <br/>
+                <br/>
+                <p>loading...</p>
         </div>
       )
     default:
