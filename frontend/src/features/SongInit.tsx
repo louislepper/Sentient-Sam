@@ -6,6 +6,7 @@ import 'react-awesome-button/dist/themes/theme-c137.css';
 import { isIOS } from './ios-utils';
 import { startTone } from './start-tone';
 import { initSong, startSong } from './audio-controller';
+import { restart } from './songSlice';
 
 import {
   fetchSong,
@@ -41,8 +42,13 @@ export function SongInit() {
       await tonePromise;
 
       if (songData) {
-        await initSong(songData, topic);
-        startSong();
+        try {
+          await initSong(songData, topic);
+          startSong();
+        } catch (e) {
+          console.log("Got an error, heading back to selection. " + e);
+          dispatch(restart());
+        }
       }
   }
 

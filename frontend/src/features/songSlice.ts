@@ -92,10 +92,10 @@ export const fetchSong = (topic: string): AppThunk<Promise<ProcessedWord[] | nul
         .then(json => {     
           const result = {
             topic: json.topic, 
-            words: json.words
+            words: []
           };  
           dispatch(receiveSong(result));
-          return processWords(result.words);
+          return processWords(json.words);
         })
         .catch(e => {
           console.log("Unable to fetch song - " + e);

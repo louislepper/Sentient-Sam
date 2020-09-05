@@ -7,7 +7,7 @@ import { restart } from './songSlice';
 import { useAlert } from 'react-alert';
 import { copyTextToClipboard } from './clipboard-utils';
 import { startTone } from './start-tone';
-import { clearSong, initSong, startSong } from './audio-controller';
+import { clearSong, startSong, stopSong } from './audio-controller';
 
 export function PlayingSong(props: { 
   words: { 
@@ -26,10 +26,9 @@ export function PlayingSong(props: {
   const alert = useAlert();
 
   async function replay() {
-    await startTone();
-    await clearSong();
     try {
-      await initSong(props.words, props.topic);
+      await stopSong();
+      await startTone();
       startSong();
     } catch(e) {
       console.log("Unable to replay song " + e);
