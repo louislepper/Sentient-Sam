@@ -4,7 +4,7 @@ const googleClient = require('./clients/google-speech');
 const lyricService = require('./lyric-service')
 
 async function getVocalTrackResource(req){
-    const topicString = req.query["topic"];
+    const topicString = req.query["topic"].trim();
     const limit = Math.min(req.query["limit"] || 10, 40);
 
     const lyrics = await lyricService.getLyricsForTopic({
