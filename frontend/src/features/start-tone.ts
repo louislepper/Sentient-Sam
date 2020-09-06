@@ -1,13 +1,13 @@
 import * as Tone from 'tone';
 
+const osc = new Tone.Oscillator();
+const gain = new Tone.Gain(1e-37);
+
 // Hack for audio context resumption in ios
 export function startTone(){
-    //@ts-ignore
-    if (Tone.context.state === 'interrupted' || 
-    Tone.context.state === 'suspended') {
-      //@ts-ignore
-      return Tone.context._context.resume();
-  }
-
-  return Promise.resolve();
+  Tone.start();
+  console.log("Audio context state: " + Tone.context.state);
+  osc.connect(gain)
+  osc.start();
+  gain.toDestination();
 }

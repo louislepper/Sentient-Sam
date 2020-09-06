@@ -1,3 +1,8 @@
+@font-face {
+  font-family: "badscript";
+  src: url("badscript_regular.ttf");
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

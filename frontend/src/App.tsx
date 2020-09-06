@@ -11,6 +11,7 @@ function App() {
 
   return (
     <div className="App">
+      <p className="fontPreloader">.</p>
       <header>
         <nav>
           <div className="navButtons">
